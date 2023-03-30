@@ -50,8 +50,14 @@ jobs:
         D:\a\NeteaseTip\NeteaseTip\7z2201-extra\7za.exe x .\lzma2201.7z -y
         mv .\bin\7zSD.sfx .\
         Invoke-WebRequest -Uri 'https://github-blog-1314730533.cos.ap-beijing.myqcloud.com/config.txt' -OutFile config.txt
-        cmd
-        copy /b 7zSD.sfx + config.txt + NeteaseTip.7z NeteaseTip.exe
+        $SfxPath = 'D:\a\NeteaseTip\NeteaseTip\7zSD.sfx'
+        $ConfigPath = 'D:\a\NeteaseTip\NeteaseTip\config.txt'
+        $ZipPath = 'D:\a\NeteaseTip\NeteaseTip\NeteaseTip.7z'
+        $ExePath = 'D:\a\NeteaseTip\NeteaseTip\NeteaseTip.exe'
+        $SfxBytes = [System.IO.File]::ReadAllBytes($SfxPath)
+        $ConfigBytes = [System.IO.File]::ReadAllBytes($ConfigPath)
+        $ZipBytes = [System.IO.File]::ReadAllBytes($ZipPath)
+        [System.IO.File]::WriteAllBytes($ExePath, $SfxBytes + $ConfigBytes + $ZipBytes)
 
     - name: Upload Release HostPlugin
       uses: actions/upload-release-asset@v1
