@@ -40,6 +40,7 @@ jobs:
         pip install pystray
         pip install pyncm
         pip install win10toast
+        dir
         mv D:\a\NeteaseTip\NeteaseTip\env\Lib\site-packages\* D:\a\NeteaseTip\NeteaseTip\PyStand-py38-pyqt5-lite\site-packages\
         D:\a\NeteaseTip\NeteaseTip\7z.exe a -t7z NeteaseTip.7z D:\a\NeteaseTip\NeteaseTip\PyStand-py38-pyqt5-lite -mx=9 -m0=LZMA2
         D:\a\NeteaseTip\NeteaseTip\7z.exe x D:\a\NeteaseTip\NeteaseTip\lzma2201.7z -y
