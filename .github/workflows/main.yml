@@ -33,7 +33,7 @@ jobs:
       run: |
         cd "D:\a\NeteaseTip\NeteaseTip"
         Invoke-WebRequest -Uri 'https://github-blog-1314730533.cos.ap-beijing.myqcloud.com/7z2201-extra.zip' -OutFile 7z2201-extra.zip
-        Invoke-WebRequest -Uri 'https://github-blog-1314730533.cos.ap-beijing.myqcloud.com/PyStand\PyStand-py38-pyqt5-lite.7z' -OutFile 'PyStand.7z' 
+        Invoke-WebRequest -Uri 'https://github-blog-1314730533.cos.ap-beijing.myqcloud.com/PyStand-py38-pyqt5-lite.7z' -OutFile 'PyStand.7z' 
         Expand-Archive -Path "7z2201-extra.zip" -DestinationPath "D:\a\NeteaseTip\NeteaseTip"
         D:\a\NeteaseTip\NeteaseTip\7z2201-extra\7za.exe x .\PyStand.7z -y -o"D:\a\NeteaseTip\NeteaseTip\PyStand"
         pip install virtualenv
