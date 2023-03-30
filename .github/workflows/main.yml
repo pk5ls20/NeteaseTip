@@ -32,8 +32,8 @@ jobs:
     - name: Build NeteaseTip
       run: |
         cd "D:\a\NeteaseTip\NeteaseTip"
-        Invoke-WebRequest -Uri 'https://github-blog-1314730533.cos.ap-beijing.myqcloud.com/7z2201-extra.zip' -OutFile 7z2201-extra.zip
-        Invoke-WebRequest -Uri 'https://github-blog-1314730533.cos.ap-beijing.myqcloud.com/PyStand-py38-pyqt5-lite.7z' -OutFile 'PyStand.7z' 
+        Invoke-WebRequest -Uri 'https://github-cos-pub-1314730533.cos.na-siliconvalley.myqcloud.com/7z2201-extra.zip' -OutFile 7z2201-extra.zip
+        Invoke-WebRequest -Uri 'https://github-cos-pub-1314730533.cos.na-siliconvalley.myqcloud.com/PyStand-py38-pyqt5-lite.7z' -OutFile 'PyStand.7z' 
         Expand-Archive -Path "7z2201-extra.zip" -DestinationPath "D:\a\NeteaseTip\NeteaseTip"
         D:\a\NeteaseTip\NeteaseTip\7z2201-extra\7za.exe x .\PyStand.7z -y -o"D:\a\NeteaseTip\NeteaseTip\PyStand"
         pip install virtualenv
@@ -49,7 +49,7 @@ jobs:
         Invoke-WebRequest -Uri 'https://www.7-zip.org/a/lzma2201.7z' -OutFile lzma2201.7z
         D:\a\NeteaseTip\NeteaseTip\7z2201-extra\7za.exe x .\lzma2201.7z -y
         mv .\bin\7zSD.sfx .\
-        Invoke-WebRequest -Uri 'https://github-blog-1314730533.cos.ap-beijing.myqcloud.com/config.txt' -OutFile config.txt
+        Invoke-WebRequest -Uri 'https://github-cos-pub-1314730533.cos.na-siliconvalley.myqcloud.com/config.txt' -OutFile config.txt
         $SfxPath = 'D:\a\NeteaseTip\NeteaseTip\7zSD.sfx'
         $ConfigPath = 'D:\a\NeteaseTip\NeteaseTip\config.txt'
         $ZipPath = 'D:\a\NeteaseTip\NeteaseTip\NeteaseTip.7z'
