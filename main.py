@@ -166,7 +166,7 @@ class MyWidget(QWidget):
     def edit_config():
         os.startfile(f"{os.environ['APPDATA']}\\.neteasetip")
 
-    def lrc_make(self, ori: list, tran: list) -> dict[int, list[str]]:
+    def lrc_make(self, ori: list, tran: list):
         lyrics_dict = {}
         new = ori + tran if (len(tran) > 1 and tran[0] != '') else ori
         for line in new:
