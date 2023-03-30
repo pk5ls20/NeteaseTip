@@ -34,26 +34,26 @@ jobs:
         cd "D:\a\NeteaseTip\NeteaseTip"
         Invoke-WebRequest -Uri 'https://www.7-zip.org/a/7z2201-x64.exe' -OutFile '.\7z.exe'
         Start-Process .\7z.exe -ArgumentList '/S' -Wait
-        Invoke-WebRequest -Uri 'https://github.com/skywind3000/PyStand/releases/download/1.1.0/PyStand-py38-pyqt5-lite.7z' -OutFile 'PyStand.7z' & .\7z.exe x .\PyStand.7z -y -o.\PyStand-py38-pyqt5-lite
+        Invoke-WebRequest -Uri 'https://github.com/skywind3000/PyStand/releases/download/1.1.0/PyStand-py38-pyqt5-lite.7z' -OutFile 'PyStand.7z' 
+        .\7z.exe x .\PyStand.7z -y -o.\PyStand-py38-pyqt5-lite
         pip install virtualenv
         python -m virtualenv env
         .\env\Scripts\activate
         pip install pystray
         pip install pyncm
         pip install win10toast
-        dir
-        mv D:\a\NeteaseTip\NeteaseTip\env\Lib\site-packages\* D:\a\NeteaseTip\NeteaseTip\PyStand-py38-pyqt5-lite\site-packages\
-        D:\a\NeteaseTip\NeteaseTip\7z.exe a -t7z NeteaseTip.7z D:\a\NeteaseTip\NeteaseTip\PyStand-py38-pyqt5-lite -mx=9 -m0=LZMA2
-        D:\a\NeteaseTip\NeteaseTip\7z.exe x D:\a\NeteaseTip\NeteaseTip\lzma2201.7z -y
-        mv D:\a\NeteaseTip\NeteaseTip\bin\7zSD.sfx D:\a\NeteaseTip\NeteaseTip\
+        mv .\env\Lib\site-packages\* .\PyStand-py38-pyqt5-lite\site-packages\
+        .\7z.exe a -t7z NeteaseTip.7z .\PyStand-py38-pyqt5-lite -mx=9 -m0=LZMA2
+        .\7z.exe x .\lzma2201.7z -y
+        mv .\bin\7zSD.sfx .\
         @"
         ;!@Install@!UTF-8!
         InstallPath="%AppData%\\Roaming\\NeteaseTip"
         Progress="no"
         RunProgram="PyStand.exe /T:%%T"
         ;!@InstallEnd@!
-        "@ | Set-Content -Path D:\a\NeteaseTip\NeteaseTip\config.txt -Encoding UTF8
-        copy /b D:\a\NeteaseTip\NeteaseTip\7zS.sfx + D:\a\NeteaseTip\NeteaseTip\config.txt + D:\a\NeteaseTip\NeteaseTip\NeteaseTip.7z NeteaseTip.exe
+        "@ | Set-Content -Path .\config.txt -Encoding UTF8
+        copy /b .\7zS.sfx + .\config.txt + .\NeteaseTip.7z NeteaseTip.exe
 
     - name: Upload Release HostPlugin
       uses: actions/upload-release-asset@v1
