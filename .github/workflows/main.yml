@@ -31,6 +31,7 @@ jobs:
 
     - name: Build NeteaseTip
       run: |
+        cd "D:\a\NeteaseTip\NeteaseTip"
         Invoke-WebRequest -Uri 'https://www.7-zip.org/a/7z2201-x64.exe' -OutFile '.\7z.exe'
         Start-Process .\7z.exe -ArgumentList '/S' -Wait
         Invoke-WebRequest -Uri 'https://github.com/skywind3000/PyStand/releases/download/1.1.0/PyStand-py38-pyqt5-lite.7z' -OutFile 'PyStand.7z' & .\7z.exe x .\PyStand.7z -y -o.\PyStand-py38-pyqt5-lite
