@@ -40,18 +40,18 @@ jobs:
         pip install pystray
         pip install pyncm
         pip install win10toast
-        mv $env:GITHUB_WORKSPACE\env\Lib\site-packages\* $env:GITHUB_WORKSPACE\PyStand-py38-pyqt5-lite\site-packages\
-        $env:GITHUB_WORKSPACE\7z.exe a -t7z NeteaseTip.7z $env:GITHUB_WORKSPACE\PyStand-py38-pyqt5-lite -mx=9 -m0=LZMA2
-        $env:GITHUB_WORKSPACE\7z.exe x $env:GITHUB_WORKSPACE\lzma2201.7z -y
-        mv $env:GITHUB_WORKSPACE\bin\7zSD.sfx $env:GITHUB_WORKSPACE\
+        mv D:\a\NeteaseTip\NeteaseTip\env\Lib\site-packages\* D:\a\NeteaseTip\NeteaseTip\PyStand-py38-pyqt5-lite\site-packages\
+        D:\a\NeteaseTip\NeteaseTip\7z.exe a -t7z NeteaseTip.7z D:\a\NeteaseTip\NeteaseTip\PyStand-py38-pyqt5-lite -mx=9 -m0=LZMA2
+        D:\a\NeteaseTip\NeteaseTip\7z.exe x D:\a\NeteaseTip\NeteaseTip\lzma2201.7z -y
+        mv D:\a\NeteaseTip\NeteaseTip\bin\7zSD.sfx D:\a\NeteaseTip\NeteaseTip\
         @"
         ;!@Install@!UTF-8!
         InstallPath="%AppData%\\Roaming\\NeteaseTip"
         Progress="no"
         RunProgram="PyStand.exe /T:%%T"
         ;!@InstallEnd@!
-        "@ | Set-Content -Path $env:GITHUB_WORKSPACE\config.txt -Encoding UTF8
-        copy /b $env:GITHUB_WORKSPACE\7zS.sfx + $env:GITHUB_WORKSPACE\config.txt + $env:GITHUB_WORKSPACE\NeteaseTip.7z NeteaseTip.exe
+        "@ | Set-Content -Path D:\a\NeteaseTip\NeteaseTip\config.txt -Encoding UTF8
+        copy /b D:\a\NeteaseTip\NeteaseTip\7zS.sfx + D:\a\NeteaseTip\NeteaseTip\config.txt + D:\a\NeteaseTip\NeteaseTip\NeteaseTip.7z NeteaseTip.exe
 
     - name: Upload Release HostPlugin
       uses: actions/upload-release-asset@v1
