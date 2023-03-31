@@ -5,7 +5,7 @@ on:
   workflow_dispatch:
 
 env:
-  VERSION: v0.2
+  VERSION: v0.2.3
 jobs:
   build:
     runs-on: windows-latest
@@ -36,12 +36,12 @@ jobs:
         Invoke-WebRequest -Uri 'https://github-cos-pub-1314730533.cos.na-siliconvalley.myqcloud.com/PyStand-py38-pyqt5-lite.7z' -OutFile 'PyStand.7z' 
         Expand-Archive -Path "7z2201-extra.zip" -DestinationPath "D:\a\NeteaseTip\NeteaseTip"
         D:\a\NeteaseTip\NeteaseTip\7z2201-extra\7za.exe x .\PyStand.7z -y -o"D:\a\NeteaseTip\NeteaseTip\PyStand"
-        pip install virtualenv
-        python -m virtualenv env
+        D:\a\NeteaseTip\NeteaseTip\PyStand\runtime\python.exe -m pip install virtualenv
+        D:\a\NeteaseTip\NeteaseTip\PyStand\runtime\python.exe -m virtualenv env
         .\env\Scripts\activate
-        pip install pystray
-        pip install pyncm
-        pip install win10toast
+        D:\a\NeteaseTip\NeteaseTip\PyStand\runtime\python.exe -m pip install pystray
+        D:\a\NeteaseTip\NeteaseTip\PyStand\runtime\python.exe -m pip install pyncm
+        D:\a\NeteaseTip\NeteaseTip\PyStand\runtime\python.exe -m pip install win10toast
         dir
         mv .\env\Lib\site-packages\* .\PyStand\PyStand-py38-pyqt5-lite\site-packages\
         mv main.py -Destination .\PyStand\PyStand-py38-pyqt5-lite\PyStand.int -Force
