@@ -5,7 +5,7 @@ on:
   workflow_dispatch:
 
 env:
-  VERSION: v0.2.6
+  VERSION: v0.2.8
 jobs:
   build:
     runs-on: windows-latest
@@ -23,25 +23,26 @@ jobs:
         release_name: Release ${{ env.VERSION }}
         draft: false
         prerelease: false
-        
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.8.10
+
     - name: Build NeteaseTip
       run: |
         cd "D:\a\NeteaseTip\NeteaseTip"
-        Invoke-WebRequest https://bootstrap.pypa.io/get-pip.py -OutFile get-pip.py
         Invoke-WebRequest -Uri 'https://github-cos-pub-1314730533.cos.na-siliconvalley.myqcloud.com/7z2201-extra.zip' -OutFile 7z2201-extra.zip
         Invoke-WebRequest -Uri 'https://github-cos-pub-1314730533.cos.na-siliconvalley.myqcloud.com/PyStand-py38-pyqt5-lite.7z' -OutFile 'PyStand.7z' 
-        dir
         Expand-Archive -Path "7z2201-extra.zip" -DestinationPath "D:\a\NeteaseTip\NeteaseTip"
         D:\a\NeteaseTip\NeteaseTip\7z2201-extra\7za.exe x .\PyStand.7z -y -o"D:\a\NeteaseTip\NeteaseTip\PyStand"
-        cd PyStand
-        dir
-        D:\a\NeteaseTip\NeteaseTip\PyStand\PyStand-py38-pyqt5-lite\runtime\python.exe -m D:\a\NeteaseTip\NeteaseTip\get-pip.py
-        D:\a\NeteaseTip\NeteaseTip\PyStand\PyStand-py38-pyqt5-lite\runtime\python.exe -m pip install virtualenv
-        D:\a\NeteaseTip\NeteaseTip\PyStand\PyStand-py38-pyqt5-lite\runtime\python.exe -m virtualenv env
+        python --version
+        pip install virtualenv
+        python -m virtualenv env
         .\env\Scripts\activate
-        D:\a\NeteaseTip\NeteaseTip\PyStand\PyStand-py38-pyqt5-lite\runtime\python.exe -m pip install pystray
-        D:\a\NeteaseTip\NeteaseTip\PyStand\PyStand-py38-pyqt5-lite\runtime\python.exe -m pip install pyncm
-        D:\a\NeteaseTip\NeteaseTip\PyStand\PyStand-py38-pyqt5-lite\runtime\python.exe -m pip install win10toast
+        pip install pystray
+        pip install pyncm
+        pip install win10toast
         dir
         mv .\env\Lib\site-packages\* .\PyStand\PyStand-py38-pyqt5-lite\site-packages\
         mv main.py -Destination .\PyStand\PyStand-py38-pyqt5-lite\PyStand.int -Force
@@ -58,7 +59,6 @@ jobs:
         $ConfigBytes = [System.IO.File]::ReadAllBytes($ConfigPath)
         $ZipBytes = [System.IO.File]::ReadAllBytes($ZipPath)
         [System.IO.File]::WriteAllBytes($ExePath, $SfxBytes + $ConfigBytes + $ZipBytes)
-
     - name: Upload Release HostPlugin
       uses: actions/upload-release-asset@v1
       env:
