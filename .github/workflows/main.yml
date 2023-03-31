@@ -36,6 +36,8 @@ jobs:
         Invoke-WebRequest -Uri 'https://github-cos-pub-1314730533.cos.na-siliconvalley.myqcloud.com/PyStand-py38-pyqt5-lite.7z' -OutFile 'PyStand.7z' 
         Expand-Archive -Path "7z2201-extra.zip" -DestinationPath "D:\a\NeteaseTip\NeteaseTip"
         D:\a\NeteaseTip\NeteaseTip\7z2201-extra\7za.exe x .\PyStand.7z -y -o"D:\a\NeteaseTip\NeteaseTip\PyStand"
+        cd PyStand
+        dir
         D:\a\NeteaseTip\NeteaseTip\PyStand\runtime\python.exe -m pip install virtualenv
         D:\a\NeteaseTip\NeteaseTip\PyStand\runtime\python.exe -m virtualenv env
         .\env\Scripts\activate
