@@ -5,7 +5,7 @@ on:
   workflow_dispatch:
 
 env:
-  VERSION: v0.2.4
+  VERSION: v0.2.5
 jobs:
   build:
     runs-on: windows-latest
@@ -32,12 +32,14 @@ jobs:
     - name: Build NeteaseTip
       run: |
         cd "D:\a\NeteaseTip\NeteaseTip"
+        Invoke-WebRequest https://bootstrap.pypa.io/get-pip.py -OutFile get-pip.py
         Invoke-WebRequest -Uri 'https://github-cos-pub-1314730533.cos.na-siliconvalley.myqcloud.com/7z2201-extra.zip' -OutFile 7z2201-extra.zip
         Invoke-WebRequest -Uri 'https://github-cos-pub-1314730533.cos.na-siliconvalley.myqcloud.com/PyStand-py38-pyqt5-lite.7z' -OutFile 'PyStand.7z' 
         Expand-Archive -Path "7z2201-extra.zip" -DestinationPath "D:\a\NeteaseTip\NeteaseTip"
         D:\a\NeteaseTip\NeteaseTip\7z2201-extra\7za.exe x .\PyStand.7z -y -o"D:\a\NeteaseTip\NeteaseTip\PyStand"
         cd PyStand
         dir
+        D:\a\NeteaseTip\NeteaseTip\PyStand\PyStand-py38-pyqt5-lite\runtime\python.exe -m D:\a\NeteaseTip\NeteaseTip\get-pip.py
         D:\a\NeteaseTip\NeteaseTip\PyStand\PyStand-py38-pyqt5-lite\runtime\python.exe -m pip install virtualenv
         D:\a\NeteaseTip\NeteaseTip\PyStand\PyStand-py38-pyqt5-lite\runtime\python.exe -m virtualenv env
         .\env\Scripts\activate
