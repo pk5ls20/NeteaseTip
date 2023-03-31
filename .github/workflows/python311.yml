@@ -1,0 +1,83 @@
+name: Build and Release
+on:
+  push:
+    branches: ["main"]
+  workflow_dispatch:
+
+env:
+  VERSION: v0.3-py311
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Create Release
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ env.VERSION }}
+        release_name: Release ${{ env.VERSION }}
+        draft: false
+        prerelease: false
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.11.0
+        architecture: "x86"
+
+    - name: Build NeteaseTip
+      run: |
+        cd "D:\a\NeteaseTip\NeteaseTip"
+        # 下载7z+PyStand并解压，安装7z
+        Invoke-WebRequest -Uri 'https://github-cos-pub-1314730533.cos.na-siliconvalley.myqcloud.com/7z2201-extra.zip' -OutFile 7z2201-extra.zip
+        Invoke-WebRequest -Uri 'https://github-cos-pub-1314730533.cos.na-siliconvalley.myqcloud.com/PyStand-py38-pyqt5-lite.7z' -OutFile 'PyStand.7z' 
+        Expand-Archive -Path "7z2201-extra.zip" -DestinationPath "D:\a\NeteaseTip\NeteaseTip"
+        D:\a\NeteaseTip\NeteaseTip\7z2201-extra\7za.exe x .\PyStand.7z -y -o"D:\a\NeteaseTip\NeteaseTip\PyStand"
+        # 初始化python
+        python --version
+        pip install virtualenv
+        python -m virtualenv env
+        .\env\Scripts\activate
+        pip install pystray
+        pip install pyncm
+        pip install win10toast
+        dir
+        # 移动依赖包
+        mv .\env\Lib\site-packages\* .\PyStand\PyStand-py38-pyqt5-lite\site-packages\
+        mv main.py -Destination .\PyStand\PyStand-py38-pyqt5-lite\PyStand.int -Force
+        # 打包
+        D:\a\NeteaseTip\NeteaseTip\7z2201-extra\7za.exe a -t7z NeteaseTip.7z .\PyStand\PyStand-py38-pyqt5-lite\* -r -mx=9 -m0=LZMA2
+        # 下载py39-emb并替换原有py38-emb
+        Invoke-WebRequest -Uri 'https://www.python.org/ftp/python/3.11.0/python-3.11.0-embed-win32.zip' -OutFile 'python-3.11.0-embed-win32.zip'
+        rmdir "D:\a\NeteaseTip\NeteaseTip\PyStand\PyStand-py38-pyqt5-lite\runtime" -Recurse -Force
+        mkdir "D:\a\NeteaseTip\NeteaseTip\PyStand\PyStand-py38-pyqt5-lite\runtime"
+        Expand-Archive -Path "python-3.11.0-embed-win32.zip" -DestinationPath "D:\a\NeteaseTip\NeteaseTip\PyStand\PyStand-py38-pyqt5-lite\runtime"
+        # 下载7z-lzma并解压
+        Invoke-WebRequest -Uri 'https://www.7-zip.org/a/lzma2201.7z' -OutFile lzma2201.7z
+        D:\a\NeteaseTip\NeteaseTip\7z2201-extra\7za.exe x .\lzma2201.7z -y
+        mv .\bin\7zSD.sfx .\
+        # 下载lzma配置文件
+        Invoke-WebRequest -Uri 'https://github-cos-pub-1314730533.cos.na-siliconvalley.myqcloud.com/config.txt' -OutFile config.txt
+        # 打包自解压程序
+        $SfxPath = 'D:\a\NeteaseTip\NeteaseTip\7zSD.sfx'
+        $ConfigPath = 'D:\a\NeteaseTip\NeteaseTip\config.txt'
+        $ZipPath = 'D:\a\NeteaseTip\NeteaseTip\NeteaseTip.7z'
+        $ExePath = 'D:\a\NeteaseTip\NeteaseTip\NeteaseTip.exe'
+        $SfxBytes = [System.IO.File]::ReadAllBytes($SfxPath)
+        $ConfigBytes = [System.IO.File]::ReadAllBytes($ConfigPath)
+        $ZipBytes = [System.IO.File]::ReadAllBytes($ZipPath)
+        [System.IO.File]::WriteAllBytes($ExePath, $SfxBytes + $ConfigBytes + $ZipBytes)
+    - name: Upload Release HostPlugin
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: NeteaseTip.exe
+        asset_name: NeteaseTip.exe
+        asset_content_type: application/x-msdownload

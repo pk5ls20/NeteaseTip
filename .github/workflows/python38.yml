@@ -5,7 +5,7 @@ on:
   workflow_dispatch:
 
 env:
-  VERSION: v0.3
+  VERSION: v0.3-py38
 jobs:
   build:
     runs-on: windows-latest
@@ -33,10 +33,12 @@ jobs:
     - name: Build NeteaseTip
       run: |
         cd "D:\a\NeteaseTip\NeteaseTip"
+        # 下载7z+PyStand并解压，安装7z
         Invoke-WebRequest -Uri 'https://github-cos-pub-1314730533.cos.na-siliconvalley.myqcloud.com/7z2201-extra.zip' -OutFile 7z2201-extra.zip
         Invoke-WebRequest -Uri 'https://github-cos-pub-1314730533.cos.na-siliconvalley.myqcloud.com/PyStand-py38-pyqt5-lite.7z' -OutFile 'PyStand.7z' 
         Expand-Archive -Path "7z2201-extra.zip" -DestinationPath "D:\a\NeteaseTip\NeteaseTip"
         D:\a\NeteaseTip\NeteaseTip\7z2201-extra\7za.exe x .\PyStand.7z -y -o"D:\a\NeteaseTip\NeteaseTip\PyStand"
+        # 初始化python
         python --version
         pip install virtualenv
         python -m virtualenv env
@@ -45,13 +47,18 @@ jobs:
         pip install pyncm
         pip install win10toast
         dir
+        # 移动依赖包
         mv .\env\Lib\site-packages\* .\PyStand\PyStand-py38-pyqt5-lite\site-packages\
         mv main.py -Destination .\PyStand\PyStand-py38-pyqt5-lite\PyStand.int -Force
+        # 打包
         D:\a\NeteaseTip\NeteaseTip\7z2201-extra\7za.exe a -t7z NeteaseTip.7z .\PyStand\PyStand-py38-pyqt5-lite\* -r -mx=9 -m0=LZMA2
+        # 下载7z-lzma并解压
         Invoke-WebRequest -Uri 'https://www.7-zip.org/a/lzma2201.7z' -OutFile lzma2201.7z
         D:\a\NeteaseTip\NeteaseTip\7z2201-extra\7za.exe x .\lzma2201.7z -y
         mv .\bin\7zSD.sfx .\
+        # 下载lzma配置文件
         Invoke-WebRequest -Uri 'https://github-cos-pub-1314730533.cos.na-siliconvalley.myqcloud.com/config.txt' -OutFile config.txt
+        # 打包自解压程序
         $SfxPath = 'D:\a\NeteaseTip\NeteaseTip\7zSD.sfx'
         $ConfigPath = 'D:\a\NeteaseTip\NeteaseTip\config.txt'
         $ZipPath = 'D:\a\NeteaseTip\NeteaseTip\NeteaseTip.7z'
@@ -60,6 +67,7 @@ jobs:
         $ConfigBytes = [System.IO.File]::ReadAllBytes($ConfigPath)
         $ZipBytes = [System.IO.File]::ReadAllBytes($ZipPath)
         [System.IO.File]::WriteAllBytes($ExePath, $SfxBytes + $ConfigBytes + $ZipBytes)
+
     - name: Upload Release HostPlugin
       uses: actions/upload-release-asset@v1
       env:
