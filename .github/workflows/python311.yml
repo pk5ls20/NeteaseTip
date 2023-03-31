@@ -1,11 +1,11 @@
-name: Build and Release
+name: Build and Release on Python 311
 on:
   push:
     branches: ["main"]
   workflow_dispatch:
 
 env:
-  VERSION: v0.3-py311
+  VERSION: v0.3.1-py311
 jobs:
   build:
     runs-on: windows-latest
@@ -50,13 +50,13 @@ jobs:
         # 移动依赖包
         mv .\env\Lib\site-packages\* .\PyStand\PyStand-py38-pyqt5-lite\site-packages\
         mv main.py -Destination .\PyStand\PyStand-py38-pyqt5-lite\PyStand.int -Force
-        # 打包
-        D:\a\NeteaseTip\NeteaseTip\7z2201-extra\7za.exe a -t7z NeteaseTip.7z .\PyStand\PyStand-py38-pyqt5-lite\* -r -mx=9 -m0=LZMA2
         # 下载py39-emb并替换原有py38-emb
         Invoke-WebRequest -Uri 'https://www.python.org/ftp/python/3.11.0/python-3.11.0-embed-win32.zip' -OutFile 'python-3.11.0-embed-win32.zip'
         rmdir "D:\a\NeteaseTip\NeteaseTip\PyStand\PyStand-py38-pyqt5-lite\runtime" -Recurse -Force
         mkdir "D:\a\NeteaseTip\NeteaseTip\PyStand\PyStand-py38-pyqt5-lite\runtime"
         Expand-Archive -Path "python-3.11.0-embed-win32.zip" -DestinationPath "D:\a\NeteaseTip\NeteaseTip\PyStand\PyStand-py38-pyqt5-lite\runtime"
+        # 打包
+        D:\a\NeteaseTip\NeteaseTip\7z2201-extra\7za.exe a -t7z NeteaseTip.7z .\PyStand\PyStand-py38-pyqt5-lite\* -r -mx=9 -m0=LZMA2
         # 下载7z-lzma并解压
         Invoke-WebRequest -Uri 'https://www.7-zip.org/a/lzma2201.7z' -OutFile lzma2201.7z
         D:\a\NeteaseTip\NeteaseTip\7z2201-extra\7za.exe x .\lzma2201.7z -y
