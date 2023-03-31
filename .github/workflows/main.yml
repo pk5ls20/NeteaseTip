@@ -5,7 +5,7 @@ on:
   workflow_dispatch:
 
 env:
-  VERSION: v0.2.8
+  VERSION: v0.3
 jobs:
   build:
     runs-on: windows-latest
@@ -28,6 +28,7 @@ jobs:
       uses: actions/setup-python@v2
       with:
         python-version: 3.8.10
+        architecture: "x86"
 
     - name: Build NeteaseTip
       run: |
