@@ -50,6 +50,7 @@ jobs:
         # 移动依赖包
         mv .\env\Lib\site-packages\* .\PyStand\PyStand-py38-pyqt5-lite\site-packages\
         mv main.py -Destination .\PyStand\PyStand-py38-pyqt5-lite\PyStand.int -Force
+        mv icon.png -Destination .\PyStand\PyStand-py38-pyqt5-lite\ -Force
         # 打包
         D:\a\NeteaseTip\NeteaseTip\7z2201-extra\7za.exe a -t7z NeteaseTip.7z .\PyStand\PyStand-py38-pyqt5-lite\* -r -mx=9 -m0=LZMA2
         # 下载7z-lzma并解压
