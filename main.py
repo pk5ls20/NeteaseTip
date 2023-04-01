@@ -46,10 +46,12 @@ def handle_exception(func):
             logging.error(f"IndexError: {e}")
             pass
         except FileNotFoundError as e:
-            notification_thread.show_notification("NeteaseTip", f"文件不存在！{e}")
+            if not isLogfile:
+                notification_thread.show_notification("NeteaseTip", f"文件不存在！{e}")
             logging.error(f"FileNotFoundError: {e}")
         except Exception as e:
-            notification_thread.show_notification("NeteaseTip", f"出现未知异常！{e}")
+            if not isLogfile:
+                notification_thread.show_notification("NeteaseTip", f"出现未知异常！{e}")
             logging.error(f"Exception: {e}")
 
     return wrapper
@@ -59,6 +61,21 @@ class MyWidget(QWidget):
     @handle_exception
     def __init__(self):
         super().__init__()
+        global isLogfile
+        try:
+            with open(f"{os.environ['APPDATA']}\\.neteasetip\\.config", "r", encoding="utf-8") as f:
+                self.config = json.load(f)
+        except FileNotFoundError as e:
+            notification_thread.show_notification("NeteaseTip", f"未能加载配置文件！{e}")
+        isLogfile = True if self.config["log"] == "True" else False
+        if isLogfile:
+            __log_name = str(f"{os.environ['APPDATA']}\\.neteasetip\\" +
+                             time.strftime("%Y-%m-%d_%H-%M-%S", time.localtime())) + str('.log')
+            sys.stderr = open(__log_name, 'a')
+            __stderr__ = sys.stderr
+            logging.basicConfig(filename=__log_name, filemode="w",
+                                format="%(asctime)s %(name)s:%(levelname)s:%(message)s",
+                                datefmt="%d-%M-%Y %H:%M:%S", level=logging.DEBUG)
         self.rand = lambda: random.randint(-10000, 10000)
         self.timex = lambda: int(time.time() * 1000)
         self.timex_c_sec = lambda x, y: abs(x - y) / 1000
@@ -119,17 +136,12 @@ class MyWidget(QWidget):
         # 使用pystray创建托盘图标
         self.menu = pystray.Menu(
             pystray.MenuItem("添加到歌单", self.add_to_playlist),
-            pystray.MenuItem("切换歌曲/歌词", self.display),
+            pystray.MenuItem("切换歌曲/歌词", self.display, default=True),
             pystray.MenuItem("编辑配置文件", self.edit_config),
-            pystray.MenuItem("退出", lambda: os.kill(os.getpid(), signal.SIGTERM))
+            pystray.MenuItem("退出", lambda: os.kill(os.getpid(), signal.SIGTERM), self.display)
         )
         self.image = Image.open("icon.png")
-        self.icon = pystray.Icon("example", self.image, "Example App", self.menu)
-        try:
-            with open(f"{os.environ['APPDATA']}\\.neteasetip", "r", encoding="utf-8") as f:
-                self.config = json.load(f)
-        except FileNotFoundError as e:
-            notification_thread.show_notification("NeteaseTip", f"未能加载配置文件！{e}")
+        self.icon = pystray.Icon("example", self.image, "Example App", self.menu, on_click=self.display)
         # TODO:恢复下条
         try:
             apis.login.LoginViaCellphone(phone=self.config["phone"], passwordHash=self.config["passwordHash"])
@@ -147,7 +159,7 @@ class MyWidget(QWidget):
             notification_thread.show_notification("NeteaseTip", f"添加失败！{st}")
         pass
 
-    def display(self):
+    def display(self, icon):
         if self.dp == 0:
             print(1)
             self.SongName.setVisible(False)
@@ -262,7 +274,7 @@ class MyWidget(QWidget):
                 self.update_text(self.text_)
             else:
                 pass
-        print("ok")
+        # print("ok")
 
     def update_display(self):
         threading.Thread(target=self._update_display).start()
@@ -287,6 +299,7 @@ class MyWidget(QWidget):
 
 
 if __name__ == '__main__':
+    global isLogfile
     notification_thread = NotificationThread()
     notification_thread.start()
     app = QApplication(sys.argv)
